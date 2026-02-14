@@ -116,7 +116,7 @@ const Register = () => {
   return (
     <div className="lg:min-h-screen p-12 flex justify-center items-center bg-green-100">
       <Helmet>
-        <title>KrishiLink – Registration</title>
+        <title>ContestHub – Registration</title>
       </Helmet>
       <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-lg">
         <h2 className="text-lg md:text-2xl font-semibold text-center mb-6">
