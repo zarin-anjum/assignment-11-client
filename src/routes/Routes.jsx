@@ -7,6 +7,7 @@ import AllContests from "../pages/AllContests/AllContests";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import PrivateRoute from "./PrivateRoutes";
+import ContestDetails from "../pages/ContestDetails/ContestDetails";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,14 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+      {
+        path: "contest/:id",
+        element: (
+          <PrivateRoute>
+            <ContestDetails></ContestDetails>
+          </PrivateRoute>
+        )
+      }
     ],
   },
 ]);
