@@ -3,6 +3,7 @@ import Hero from "../../components/Hero/Hero";
 import PopularContests from "../../components/PopularContests/PopularContests";
 import WinnerSection from "../../components/WinnerSection/WinnerSection";
 import HowItWorks from "../../components/HowItWorks/HowItWorks";
+import Footer from "../../components/Footer/Footer";
 
 const Home = () => {
   return (
@@ -11,6 +12,7 @@ const Home = () => {
       <PopularContests></PopularContests>
       <WinnerSection></WinnerSection>
       <HowItWorks></HowItWorks>
+      <Footer></Footer>
     </div>
   );
 };
