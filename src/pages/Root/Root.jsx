@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar/Navbar";
+import Footer from "../../components/Footer/Footer";
 
 const Root = () => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -23,6 +24,7 @@ const Root = () => {
     <div>
       <Navbar theme={theme} toggleTheme={toggleTheme} />
       <Outlet />
+      <Footer></Footer>
     </div>
   );
 };

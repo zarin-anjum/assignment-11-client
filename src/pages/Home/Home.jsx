@@ -12,7 +12,6 @@ const Home = () => {
       <PopularContests></PopularContests>
       <WinnerSection></WinnerSection>
       <HowItWorks></HowItWorks>
-      <Footer></Footer>
     </div>
   );
 };
