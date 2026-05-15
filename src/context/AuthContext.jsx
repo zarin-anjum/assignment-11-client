@@ -9,6 +9,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebase.config";
+import axios from "axios";
 
 const AuthContext = createContext(null);
 
@@ -20,9 +21,9 @@ const axiosPublic = axios.create({
 
 const saveUserAndGetToken = async (firebaseUser) => {
   await axiosPublic.post("/users", {
-    name: firebaseUser.displayName,
+    name: firebaseUser.displayName || "Anonymous",
     email: firebaseUser.email,
-    photo: firebaseUser.photoURL,
+    photo: firebaseUser.photoURL || "",
   });
  
   const { data } = await axiosPublic.post("/users/jwt", {
@@ -71,14 +72,14 @@ export const AuthProvider = ({ children }) => {
 
   //Keep user logged in after refresh
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
 
       if (currentUser) {
         try {
           await saveUserAndGetToken(currentUser);
         } catch (err) {
-          console.error("Failed to sync user with backend:", err.message);
+          console.error("Failed to sync user with backend:", err.response?.data || err.message);
         }
       } else {
         localStorage.removeItem("token");

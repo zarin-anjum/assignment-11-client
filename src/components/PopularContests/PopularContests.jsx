@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { ChevronRight, Loader2 } from "lucide-react";
-import axios from "axios";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import ContestCard from "../ContestCard/ContestCard";
 
 const TABS = [
@@ -16,6 +16,7 @@ const TABS = [
 
 const PopularContests = () => {
   const [activeTab, setActiveTab] = useState("All");
+  const axiosPublic = useAxiosPublic();
 
   const {
     data: contests = [],
@@ -24,8 +25,8 @@ const PopularContests = () => {
   } = useQuery({
     queryKey: ["popularContests"],
     queryFn: () =>
-      axios
-        .get(`${import.meta.env.VITE_API_URL}/contests?sort=popular&limit=6`)
+      axiosPublic
+        .get("/contests?sort=popular&limit=6")
         .then((r) => r.data),
   });
 
