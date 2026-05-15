@@ -1,7 +1,9 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Search, Loader2 } from "lucide-react";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import ContestCard from "../../components/ContestCard/ContestCard";
-import { Search } from "lucide-react";
 
 const TABS = [
   "All",
@@ -10,98 +12,6 @@ const TABS = [
   "Business Ideas",
   "Gaming Review",
   "Movie Review",
-];
-
-//Mock Data
-const MOCK_CONTESTS = [
-  {
-    _id: "1",
-    contestName: "Brand Identity Challenge",
-    type: "Image Design",
-    description: "Redesign a fictional startup's full visual identity — logo, colors, and typography.",
-    prizeMoney: 500,
-    entryFee: 10,
-    deadline: "2026-06-15",
-    participantsCount: 248,
-    image: "",
-  },
-  {
-    _id: "2",
-    contestName: "Tech Future Essay Contest",
-    type: "Article Writing",
-    description: "Write a compelling article on AI's impact on society in 2030 and beyond.",
-    prizeMoney: 300,
-    entryFee: 5,
-    deadline: "2026-06-20",
-    participantsCount: 183,
-    image: "",
-  },
-  {
-    _id: "3",
-    contestName: "Startup Pitch Competition",
-    type: "Business Ideas",
-    description: "Present your most innovative business idea to win seed funding and mentorship.",
-    prizeMoney: 1000,
-    entryFee: 15,
-    deadline: "2026-06-25",
-    participantsCount: 120,
-    image: "",
-  },
-  {
-    _id: "4",
-    contestName: "Gaming Review Cup",
-    type: "Gaming Review",
-    description: "Write the best review for any game released in the past year. Judged on depth and style.",
-    prizeMoney: 200,
-    entryFee: 5,
-    deadline: "2026-05-30",
-    participantsCount: 95,
-    image: "",
-  },
-  {
-    _id: "5",
-    contestName: "Logo Design Sprint",
-    type: "Image Design",
-    description: "Create a memorable logo for a fictional eco-friendly brand in under 48 hours.",
-    prizeMoney: 400,
-    entryFee: 10,
-    deadline: "2026-06-10",
-    participantsCount: 210,
-    image: "",
-  },
-  {
-    _id: "6",
-    contestName: "Movie Critique Challenge",
-    type: "Movie Review",
-    description: "Craft an insightful critique of any classic film. Judged on originality and analysis.",
-    prizeMoney: 150,
-    entryFee: 5,
-    deadline: "2026-06-18",
-    participantsCount: 67,
-    image: "",
-  },
-  {
-    _id: "7",
-    contestName: "Social Media Strategy",
-    type: "Business Ideas",
-    description: "Develop a 30-day social media growth strategy for a small business of your choice.",
-    prizeMoney: 600,
-    entryFee: 12,
-    deadline: "2026-07-01",
-    participantsCount: 88,
-    image: "",
-  },
-  {
-    _id: "8",
-    contestName: "Indie Game Review Fest",
-    type: "Gaming Review",
-    description: "Shine a spotlight on an underrated indie game with a detailed and passionate review.",
-    prizeMoney: 250,
-    entryFee: 5,
-    deadline: "2026-06-22",
-    participantsCount: 112,
-    image: "",
-  },
 ];
 
 const tabClass = {
@@ -114,27 +24,30 @@ const AllContests = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("All");
   const [searchInput, setSearchInput] = useState(
-    searchParams.get("search") || ""
+    searchParams.get("search") || "",
   );
+  const axiosPublic = useAxiosPublic();
+
+  const activeSearch = searchParams.get("search") || "";
+
+  const {
+    data: contests = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["allContests", activeSearch],
+    queryFn: () =>
+      axiosPublic
+        .get(
+          `/contests${activeSearch ? `?search=${encodeURIComponent(activeSearch)}` : ""}`,
+        )
+        .then((r) => r.data),
+  });
 
   const filtered = useMemo(() => {
-    let result = MOCK_CONTESTS;
-
-    if (activeTab !== "All") {
-      result = result.filter((c) => c.type === activeTab);
-    }
-
-    const q = searchParams.get("search") || "";
-    if (q) {
-      result = result.filter(
-        (c) =>
-          c.type.toLowerCase().includes(q.toLowerCase()) ||
-          c.contestName.toLowerCase().includes(q.toLowerCase())
-      );
-    }
-
-    return result;
-  }, [activeTab, searchParams]);
+    if (activeTab === "All") return contests;
+    return contests.filter((c) => c.type === activeTab);
+  }, [activeTab, contests]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -152,12 +65,9 @@ const AllContests = () => {
     setSearchInput("");
   };
 
-  const activeSearch = searchParams.get("search");
-
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-24 pb-16 px-4">
       <div className="max-w-6xl mx-auto">
-
         <div className="mb-8">
           <p className="text-xs font-medium text-[#534AB7] uppercase tracking-widest mb-1">
             Browse
@@ -166,7 +76,8 @@ const AllContests = () => {
             All Contests
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            {filtered.length} contest{filtered.length !== 1 ? "s" : ""} available
+            {filtered.length} contest{filtered.length !== 1 ? "s" : ""}{" "}
+            available
           </p>
         </div>
 
@@ -193,7 +104,7 @@ const AllContests = () => {
         {activeSearch && (
           <div className="flex items-center gap-2 mb-6">
             <span className="text-sm text-slate-500 dark:text-slate-400">
-              Showing results for{" "}
+              Results for{" "}
               <span className="font-medium text-[#534AB7]">
                 "{activeSearch}"
               </span>
@@ -224,7 +135,22 @@ const AllContests = () => {
           ))}
         </div>
 
-        {filtered.length === 0 && (
+        {isLoading && (
+          <div className="flex justify-center items-center py-24">
+            <Loader2 size={28} className="animate-spin text-[#534AB7]" />
+          </div>
+        )}
+
+        {isError && (
+          <div className="text-center py-24 text-slate-400 dark:text-slate-500">
+            <p className="text-4xl mb-3">😕</p>
+            <p className="text-sm font-medium">Failed to load contests.</p>
+            <p className="text-xs mt-1">Make sure your server is running.</p>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!isLoading && !isError && filtered.length === 0 && (
           <div className="text-center py-24 text-slate-400 dark:text-slate-500">
             <p className="text-4xl mb-3">🔍</p>
             <p className="text-sm font-medium">No contests found</p>
@@ -232,14 +158,13 @@ const AllContests = () => {
           </div>
         )}
 
-        {filtered.length > 0 && (
+        {!isLoading && !isError && filtered.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.map((contest) => (
               <ContestCard key={contest._id} contest={contest} />
             ))}
           </div>
         )}
-
       </div>
     </div>
   );
