@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../context/AuthContext";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import {
   Users,
   Trophy,
@@ -9,133 +12,6 @@ import {
   ArrowLeft,
   X,
 } from "lucide-react";
-
-//Mock Data
-const MOCK_CONTESTS = [
-  {
-    _id: "1",
-    contestName: "Brand Identity Challenge",
-    type: "Image Design",
-    description:
-      "Redesign a fictional startup's full visual identity. This includes a logo, color palette, typography choices, and a one-page brand guideline document. Your submission should feel cohesive, modern, and memorable.",
-    taskDetails:
-      "Submit a link to your design files (Figma, Adobe XD, or PDF). Make sure your submission includes: (1) Logo in light and dark variants, (2) Color palette with hex codes, (3) Typography choices with rationale, (4) One sample mockup applying the brand.",
-    prizeMoney: 500,
-    entryFee: 10,
-    deadline: "2026-06-15T23:59:00",
-    participantsCount: 248,
-    image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80",
-    winner: null,
-  },
-  {
-    _id: "2",
-    contestName: "Tech Future Essay Contest",
-    type: "Article Writing",
-    description:
-      "Write a compelling, well-researched article on AI's impact on society in 2030 and beyond. We're looking for original perspectives, backed by facts, written in an engaging and accessible style.",
-    taskDetails:
-      "Submit a link to your article (Google Docs, Medium, or any public URL). Article must be between 800–1500 words. Include at least 3 cited sources. No plagiarism — submissions are checked.",
-    prizeMoney: 300,
-    entryFee: 5,
-    deadline: "2026-06-20T23:59:00",
-    participantsCount: 183,
-    image: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80",
-    winner: null,
-  },
-  {
-    _id: "3",
-    contestName: "Startup Pitch Competition",
-    type: "Business Ideas",
-    description:
-      "Got a business idea you believe in? Present it here. We're looking for innovative, feasible, and scalable ideas across any industry. The best pitch wins seed funding and mentorship from industry experts.",
-    taskDetails:
-      "Submit a link to your pitch deck (Google Slides, Canva, or PDF). Your deck should cover: Problem, Solution, Target Market, Business Model, and Go-to-Market Strategy. Max 10 slides.",
-    prizeMoney: 1000,
-    entryFee: 15,
-    deadline: "2026-06-25T23:59:00",
-    participantsCount: 120,
-    image: "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=800&q=80",
-    winner: null,
-  },
-  {
-    _id: "4",
-    contestName: "Gaming Review Cup",
-    type: "Gaming Review",
-    description:
-      "Write the best review for any game released in the past year. We judge on depth of analysis, writing style, originality, and usefulness to other gamers.",
-    taskDetails:
-      "Submit a public link to your review (blog, Medium, or Google Docs). Review must be at least 600 words. Include screenshots or media if possible. Specify the platform you played on.",
-    prizeMoney: 200,
-    entryFee: 5,
-    deadline: "2026-05-10T23:59:00",
-    participantsCount: 95,
-    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80",
-    winner: {
-      name: "Alex R.",
-      photo: "https://i.pravatar.cc/100?img=11",
-    },
-  },
-  {
-    _id: "5",
-    contestName: "Logo Design Sprint",
-    type: "Image Design",
-    description:
-      "Create a memorable, clean logo for a fictional eco-friendly brand called 'Verdant'. The brand sells sustainable home products and targets young urban professionals.",
-    taskDetails:
-      "Submit a Figma or PDF link with your logo in full color, monochrome, and reversed (white on dark) versions. Include a short note (max 100 words) explaining your design decisions.",
-    prizeMoney: 400,
-    entryFee: 10,
-    deadline: "2026-06-10T23:59:00",
-    participantsCount: 210,
-    image: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&q=80",
-    winner: null,
-  },
-  {
-    _id: "6",
-    contestName: "Movie Critique Challenge",
-    type: "Movie Review",
-    description:
-      "Craft an insightful critique of any classic film (pre-2000). We're judging on originality of perspective, depth of cinematic analysis, and quality of writing.",
-    taskDetails:
-      "Submit a public link to your critique. Must be 500–1000 words. Focus on cinematography, narrative structure, or thematic depth — not just a plot summary.",
-    prizeMoney: 150,
-    entryFee: 5,
-    deadline: "2026-06-18T23:59:00",
-    participantsCount: 67,
-    image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&q=80",
-    winner: null,
-  },
-  {
-    _id: "7",
-    contestName: "Social Media Strategy",
-    type: "Business Ideas",
-    description:
-      "Develop a complete 30-day social media growth strategy for a small business of your choice. Include platform selection, content calendar, and growth KPIs.",
-    taskDetails:
-      "Submit a Google Docs or Notion link with your strategy document. Must include: platform rationale, 30-day content calendar, sample post ideas, and success metrics.",
-    prizeMoney: 600,
-    entryFee: 12,
-    deadline: "2026-07-01T23:59:00",
-    participantsCount: 88,
-    image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80",
-    winner: null,
-  },
-  {
-    _id: "8",
-    contestName: "Indie Game Review Fest",
-    type: "Gaming Review",
-    description:
-      "Shine a spotlight on an underrated indie game with a detailed and passionate review. Help other gamers discover hidden gems.",
-    taskDetails:
-      "Submit a public link to your review. The game must have fewer than 500,000 Steam reviews (or equivalent). Review must be at least 500 words. Bonus points for video content.",
-    prizeMoney: 250,
-    entryFee: 5,
-    deadline: "2026-06-22T23:59:00",
-    participantsCount: 112,
-    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&q=80",
-    winner: null,
-  },
-];
 
 const useCountdown = (deadline) => {
   const calc = () => {
@@ -173,20 +49,60 @@ const ContestDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-
-  const contest = MOCK_CONTESTS.find((c) => c._id === id);
+  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [taskLink, setTaskLink] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
   const [isRegistered, setIsRegistered] = useState(false);
+
+  const { data: contest, isLoading, isError } = useQuery({
+    queryKey: ["contest", id],
+    queryFn: () => axiosPublic.get(`/contests/${id}`).then((r) => r.data),
+  });
+
+  useEffect(() => {
+    if (contest && user) {
+      const alreadyRegistered = contest.registeredUsers?.includes(user.email);
+      const alreadySubmitted = contest.submissions?.some(
+        (s) => s.userEmail === user.email
+      );
+      setIsRegistered(alreadyRegistered);
+      setSubmitted(alreadySubmitted);
+    }
+  }, [contest, user]);
 
   const timeLeft = useCountdown(contest?.deadline);
   const isEnded = !timeLeft;
 
   if (!contest) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 px-4">
+        <p className="text-5xl mb-4">😕</p>
+        <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-2">
+          Contest not found
+        </h2>
+        <button
+          onClick={() => navigate("/all-contests")}
+          className="mt-4 text-sm text-[#534AB7] hover:underline flex items-center gap-1"
+        >
+          <ArrowLeft size={14} /> Back to all contests
+        </button>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <Loader2 size={32} className="animate-spin text-[#534AB7]" />
+      </div>
+    );
+  }
+ 
+  if (isError || !contest) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 px-4">
         <p className="text-5xl mb-4">😕</p>
@@ -216,11 +132,20 @@ const ContestDetails = () => {
     e.preventDefault();
     if (!taskLink.trim()) return;
     setIsSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setIsSubmitting(false);
-    setSubmitted(true);
-    setIsModalOpen(false);
-    setTaskLink("");
+    try {
+      await axiosSecure.patch(`/contests/${id}/submit`, {
+        submissionLink: taskLink,
+        userName: user.displayName,
+        userPhoto: user.photoURL,
+      });
+      setSubmitted(true);
+      setIsModalOpen(false);
+      setTaskLink("");
+    } catch (err) {
+      console.error("Submission failed:", err.response?.data || err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -279,7 +204,7 @@ const ContestDetails = () => {
               </p>
             </div>
 
-            {contest.winner && (
+            {contest.winner?.name && (
               <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl p-5 flex items-center gap-4">
                 <img
                   src={contest.winner.photo}
@@ -411,7 +336,6 @@ const ContestDetails = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-          {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setIsModalOpen(false)}
