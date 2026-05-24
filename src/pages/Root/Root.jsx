@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
+import { Toaster } from "react-hot-toast";
 
 const Root = () => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -22,6 +23,7 @@ const Root = () => {
 
   return (
     <div>
+      <Toaster position="top-right" />
       <Navbar theme={theme} toggleTheme={toggleTheme} />
       <Outlet />
       <Footer></Footer>

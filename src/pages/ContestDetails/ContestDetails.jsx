@@ -4,14 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../context/AuthContext";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import {
-  Users,
-  Trophy,
-  Clock,
-  CalendarX,
-  ArrowLeft,
-  X,
-} from "lucide-react";
+import { Users, Trophy, Clock, CalendarX, ArrowLeft, X } from "lucide-react";
 
 const useCountdown = (deadline) => {
   const calc = () => {
@@ -36,11 +29,24 @@ const useCountdown = (deadline) => {
 };
 
 const typeConfig = {
-  "Image Design":    { badge: "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300" },
-  "Article Writing": { badge: "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300" },
-  "Business Ideas":  { badge: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300" },
-  "Gaming Review":   { badge: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300" },
-  "Movie Review":    { badge: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300" },
+  "Image Design": {
+    badge:
+      "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300",
+  },
+  "Article Writing": {
+    badge:
+      "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300",
+  },
+  "Business Ideas": {
+    badge:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
+  },
+  "Gaming Review": {
+    badge: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
+  },
+  "Movie Review": {
+    badge: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300",
+  },
 };
 
 const pad = (n) => String(n).padStart(2, "0");
@@ -58,7 +64,11 @@ const ContestDetails = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
 
-  const { data: contest, isLoading, isError } = useQuery({
+  const {
+    data: contest,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["contest", id],
     queryFn: () => axiosPublic.get(`/contests/${id}`).then((r) => r.data),
   });
@@ -67,7 +77,7 @@ const ContestDetails = () => {
     if (contest && user) {
       const alreadyRegistered = contest.registeredUsers?.includes(user.email);
       const alreadySubmitted = contest.submissions?.some(
-        (s) => s.userEmail === user.email
+        (s) => s.userEmail === user.email,
       );
       setIsRegistered(alreadyRegistered);
       setSubmitted(alreadySubmitted);
@@ -101,7 +111,7 @@ const ContestDetails = () => {
       </div>
     );
   }
- 
+
   if (isError || !contest) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 px-4">
@@ -151,7 +161,6 @@ const ContestDetails = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-24 pb-16 px-4">
       <div className="max-w-4xl mx-auto">
-
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-[#534AB7] transition-colors mb-6"
@@ -178,7 +187,9 @@ const ContestDetails = () => {
           {/* ── Left: main info ── */}
           <div className="lg:col-span-2 space-y-6">
             <div>
-              <span className={`text-xs font-medium px-3 py-1 rounded-full ${badgeClass} mb-3 inline-block`}>
+              <span
+                className={`text-xs font-medium px-3 py-1 rounded-full ${badgeClass} mb-3 inline-block`}
+              >
                 {contest.type}
               </span>
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white leading-snug">
@@ -295,7 +306,9 @@ const ContestDetails = () => {
                       bg-[#534AB7] hover:bg-[#3C3489] text-white
                       disabled:bg-slate-200 disabled:dark:bg-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed"
                   >
-                    {isEnded ? "Registration Closed" : `Register · $${contest.entryFee}`}
+                    {isEnded
+                      ? "Registration Closed"
+                      : `Register · $${contest.entryFee}`}
                   </button>
                 ) : (
                   <div className="space-y-2">
