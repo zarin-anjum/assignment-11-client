@@ -5,6 +5,15 @@ import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 import AllContests from "../pages/AllContests/AllContests";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import MyParticipated from "../pages/Dashboard/user/MyParticipated";
+import MyWinnings from "../pages/Dashboard/user/MyWinnings";
+import MyProfile from "../pages/Dashboard/user/MyProfile";
+import AddContest from "../pages/Dashboard/creator/AddContest";
+import MyContests from "../pages/Dashboard/creator/MyContests";
+import SubmittedTasks from "../pages/Dashboard/creator/SubmittedTasks";
+import EditContest from "../pages/Dashboard/creator/EditContest";
+import ManageUsers from "../pages/Dashboard/admin/ManageUsers";
+import ManageContests from "../pages/Dashboard/admin/ManageContests";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import PrivateRoute from "./PrivateRoutes";
 import ContestDetails from "../pages/ContestDetails/ContestDetails";
@@ -28,14 +37,6 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
-        path: "dashboard",
-        element: (
-          <PrivateRoute>
-            <Dashboard />
-          </PrivateRoute>
-        ),
-      },
-      {
         path: "all-contests",
         element: (
           <PrivateRoute>
@@ -49,8 +50,30 @@ const router = createBrowserRouter([
           <PrivateRoute>
             <ContestDetails></ContestDetails>
           </PrivateRoute>
-        )
-      }
+        ),
+      },
+      {
+        path: "dashboard",
+        element: (
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        ),
+        children: [
+          // user
+          { path: "my-participated", element: <MyParticipated /> },
+          { path: "my-winnings", element: <MyWinnings /> },
+          { path: "my-profile", element: <MyProfile /> },
+          // creator
+          { path: "add-contest", element: <AddContest /> },
+          { path: "my-contests", element: <MyContests /> },
+          { path: "submitted-tasks", element: <SubmittedTasks /> },
+          { path: "edit-contest/:id", element: <EditContest /> },
+          // admin
+          { path: "manage-users", element: <ManageUsers /> },
+          { path: "manage-contests", element: <ManageContests /> },
+        ],
+      },
     ],
   },
 ]);
