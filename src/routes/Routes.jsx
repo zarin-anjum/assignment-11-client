@@ -17,6 +17,7 @@ import ManageContests from "../pages/Dashboard/admin/ManageContests";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import PrivateRoute from "./PrivateRoutes";
 import ContestDetails from "../pages/ContestDetails/ContestDetails";
+import PaymentSuccess from "../pages/Payment/PaymentSuccess";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,14 @@ const router = createBrowserRouter([
           { path: "manage-users", element: <ManageUsers /> },
           { path: "manage-contests", element: <ManageContests /> },
         ],
+      },
+      {
+        path: "payment/success",
+        element: (
+          <PrivateRoute>
+            <PaymentSuccess />
+          </PrivateRoute>
+        ),
       },
     ],
   },

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../context/AuthContext";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
@@ -133,9 +134,18 @@ const ContestDetails = () => {
     typeConfig[contest.type]?.badge ||
     "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300";
 
-  //mock register handler (replace with payment redirect later)
-  const handleRegister = () => {
-    setIsRegistered(true);
+  const handleRegister = async () => {
+    try {
+      const { data } = await axiosSecure.post(
+        "/payment/create-checkout-session",
+        {
+          contestId: contest._id,
+        },
+      );
+      window.location.href = data.url;
+    } catch (err) {
+      toast.error("Failed to initiate payment");
+    }
   };
 
   const handleSubmitTask = async (e) => {
