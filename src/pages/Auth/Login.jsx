@@ -87,7 +87,7 @@ const Login = () => {
   };
 
   return (
-    <div className="lg:min-h-screen p-12 flex justify-center items-center bg-green-100">
+    <div className="lg:min-h-screen p-12 flex justify-center items-center bg-blue-50">
       <Helmet>
         <title>ContestHub – Login</title>
       </Helmet>

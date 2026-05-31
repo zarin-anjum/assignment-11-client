@@ -19,17 +19,17 @@ const axiosPublic = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-const saveUserAndGetToken = async (firebaseUser) => {
+const syncUserToBackend = async (firebaseUser, overrideName = null) => {
   await axiosPublic.post("/users", {
-    name: firebaseUser.displayName || "Anonymous",
+    name: overrideName || firebaseUser.displayName || "Anonymous",
     email: firebaseUser.email,
     photo: firebaseUser.photoURL || "",
   });
- 
+
   const { data } = await axiosPublic.post("/users/jwt", {
     email: firebaseUser.email,
   });
- 
+
   localStorage.setItem("token", data.token);
 };
 
@@ -75,9 +75,9 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
 
-      if (currentUser) {
+      if (currentUser?.displayName) {
         try {
-          await saveUserAndGetToken(currentUser);
+          await syncUserToBackend(currentUser);
         } catch (err) {
           console.error("Failed to sync user with backend:", err.response?.data || err.message);
         }
@@ -99,6 +99,7 @@ export const AuthProvider = ({ children }) => {
     googleLogin,
     logoutUser,
     updateUserProfile,
+    syncUserToBackend,
   };
 
   return (

@@ -2,25 +2,47 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2, Trophy, Medal } from "lucide-react";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { motion } from "framer-motion";
+import { Helmet } from "react-helmet";
 
 const rankConfig = {
-  0: { icon: "🥇", bg: "bg-amber-50 dark:bg-amber-900/20", border: "border-amber-200 dark:border-amber-700/50", text: "text-amber-600 dark:text-amber-400" },
-  1: { icon: "🥈", bg: "bg-slate-50 dark:bg-slate-700/30", border: "border-slate-200 dark:border-slate-600", text: "text-slate-500 dark:text-slate-400" },
-  2: { icon: "🥉", bg: "bg-orange-50 dark:bg-orange-900/20", border: "border-orange-200 dark:border-orange-700/50", text: "text-orange-600 dark:text-orange-400" },
+  0: {
+    icon: "🥇",
+    bg: "bg-amber-50 dark:bg-amber-900/20",
+    border: "border-amber-200 dark:border-amber-700/50",
+    text: "text-amber-600 dark:text-amber-400",
+  },
+  1: {
+    icon: "🥈",
+    bg: "bg-slate-50 dark:bg-slate-700/30",
+    border: "border-slate-200 dark:border-slate-600",
+    text: "text-slate-500 dark:text-slate-400",
+  },
+  2: {
+    icon: "🥉",
+    bg: "bg-orange-50 dark:bg-orange-900/20",
+    border: "border-orange-200 dark:border-orange-700/50",
+    text: "text-orange-600 dark:text-orange-400",
+  },
 };
 
 const Leaderboard = () => {
   const axiosPublic = useAxiosPublic();
 
-  const { data: leaders = [], isLoading, isError } = useQuery({
+  const {
+    data: leaders = [],
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["leaderboard"],
     queryFn: () => axiosPublic.get("/users/leaderboard").then((r) => r.data),
   });
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-24 pb-16 px-4">
+      <Helmet>
+        <title>ContestHub – Leaderboard</title>
+      </Helmet>
       <div className="max-w-3xl mx-auto">
-
         <div className="text-center mb-10">
           <span className="inline-flex items-center gap-1.5 text-xs font-medium px-4 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-[#534AB7]/20 text-[#534AB7] dark:text-purple-300 mb-4 shadow-sm">
             <Trophy size={12} /> Hall of Champions
@@ -45,7 +67,10 @@ const Leaderboard = () => {
             >
               <span className="text-3xl mb-2">{rankConfig[1].icon}</span>
               <img
-                src={leaders[1]?.photo || `https://ui-avatars.com/api/?name=${leaders[1]?.name}&background=534AB7&color=fff`}
+                src={
+                  leaders[1]?.photo ||
+                  `https://ui-avatars.com/api/?name=${leaders[1]?.name}&background=534AB7&color=fff`
+                }
                 alt={leaders[1]?.name}
                 className="w-12 h-12 rounded-full object-cover border-2 border-slate-300 mb-2"
               />
@@ -66,7 +91,10 @@ const Leaderboard = () => {
             >
               <span className="text-3xl mb-2">{rankConfig[0].icon}</span>
               <img
-                src={leaders[0]?.photo || `https://ui-avatars.com/api/?name=${leaders[0]?.name}&background=534AB7&color=fff`}
+                src={
+                  leaders[0]?.photo ||
+                  `https://ui-avatars.com/api/?name=${leaders[0]?.name}&background=534AB7&color=fff`
+                }
                 alt={leaders[0]?.name}
                 className="w-14 h-14 rounded-full object-cover border-2 border-amber-400 mb-2"
               />
@@ -87,7 +115,10 @@ const Leaderboard = () => {
             >
               <span className="text-3xl mb-2">{rankConfig[2].icon}</span>
               <img
-                src={leaders[2]?.photo || `https://ui-avatars.com/api/?name=${leaders[2]?.name}&background=534AB7&color=fff`}
+                src={
+                  leaders[2]?.photo ||
+                  `https://ui-avatars.com/api/?name=${leaders[2]?.name}&background=534AB7&color=fff`
+                }
                 alt={leaders[2]?.name}
                 className="w-12 h-12 rounded-full object-cover border-2 border-orange-300 mb-2"
               />
@@ -118,7 +149,9 @@ const Leaderboard = () => {
           <div className="text-center py-20 text-slate-400 dark:text-slate-500">
             <p className="text-4xl mb-3">🏆</p>
             <p className="text-sm font-medium">No winners yet</p>
-            <p className="text-xs mt-1">Winners will appear here once contests are decided</p>
+            <p className="text-xs mt-1">
+              Winners will appear here once contests are decided
+            </p>
           </div>
         )}
 
@@ -139,7 +172,6 @@ const Leaderboard = () => {
                   transition={{ delay: index * 0.05 }}
                   className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors"
                 >
-
                   <div className="w-8 text-center">
                     {index < 3 ? (
                       <span className="text-lg">{rankConfig[index].icon}</span>
@@ -151,7 +183,10 @@ const Leaderboard = () => {
                   </div>
 
                   <img
-                    src={leader.photo || `https://ui-avatars.com/api/?name=${leader.name}&background=534AB7&color=fff`}
+                    src={
+                      leader.photo ||
+                      `https://ui-avatars.com/api/?name=${leader.name}&background=534AB7&color=fff`
+                    }
                     alt={leader.name}
                     className="w-9 h-9 rounded-full object-cover"
                   />

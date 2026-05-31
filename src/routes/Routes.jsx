@@ -19,6 +19,8 @@ import PrivateRoute from "./PrivateRoutes";
 import ContestDetails from "../pages/ContestDetails/ContestDetails";
 import PaymentSuccess from "../pages/Payment/PaymentSuccess";
 import Leaderboard from "../pages/Leaderboard/Leaderboard";
+import Contact from "../pages/Contact/Contact";
+import Impact from "../pages/Impact/Impact";
 
 const router = createBrowserRouter([
   {
@@ -85,6 +87,8 @@ const router = createBrowserRouter([
         ),
       },
       { path: "leaderboard", element: <Leaderboard /> },
+      { path: "contact", element: <Contact /> },
+      { path: "impact", element: <Impact /> },
     ],
   },
 ]);

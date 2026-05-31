@@ -95,12 +95,9 @@ const Footer = () => {
       </div>
 
       <div className="border-t border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-center">
           <p className="text-xs text-slate-500">
             Copyright © 2025 ContestHub. All rights reserved.
-          </p>
-          <p className="text-xs text-slate-600">
-            Built with React · Node.js · MongoDB
           </p>
         </div>
       </div>

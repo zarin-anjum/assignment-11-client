@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { Helmet } from "react-helmet";
 
 const Register = () => {
-  const { createUser, googleLogin } = useAuth();
+  const { createUser, googleLogin, syncUserToBackend } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
@@ -66,6 +66,8 @@ const Register = () => {
         photoURL: photoURL,
       });
 
+      await syncUserToBackend(result.user, name);
+
       toast.success("Registration successful!", {
         style: {
           borderRadius: "10px",
@@ -114,7 +116,7 @@ const Register = () => {
   };
 
   return (
-    <div className="lg:min-h-screen p-12 flex justify-center items-center bg-green-100">
+    <div className="lg:min-h-screen p-12 flex justify-center items-center bg-blue-50">
       <Helmet>
         <title>ContestHub – Registration</title>
       </Helmet>

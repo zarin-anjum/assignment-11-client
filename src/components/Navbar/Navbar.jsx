@@ -8,13 +8,13 @@ import {
   ChevronDown,
   LogOut,
   LayoutDashboard,
-  User,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const Navbar = ({ theme, toggleTheme }) => {
   const { user, logoutUser } = useAuth();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -43,6 +43,16 @@ const Navbar = ({ theme, toggleTheme }) => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/login");
+    setIsOpen(false);
+  };
+
+  const activeLinkClass = "text-[#534AB7] dark:text-[#AFA9EC] font-semibold";
+  const defaultLinkClass =
+    "text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-[#534AB7] dark:hover:text-[#AFA9EC] transition-colors";
+
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${
@@ -53,7 +63,6 @@ const Navbar = ({ theme, toggleTheme }) => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
-          {/* Logo Section  */}
           <Link to="/" className="flex items-center space-x-2 group">
             <div className="w-9 h-9 bg-[#534AB7] rounded-xl flex items-center justify-center shadow-sm group-hover:rotate-12 transition-transform">
               <span className="text-white font-bold text-lg">C</span>
@@ -63,21 +72,24 @@ const Navbar = ({ theme, toggleTheme }) => {
             </span>
           </Link>
 
+          {/* Desktop nav */}
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <Link
+              <NavLink
                 key={link.name}
                 to={link.path}
-                className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-[#534AB7] dark:hover:text-[#AFA9EC] transition-colors"
+                className={({ isActive }) =>
+                  `text-sm font-medium transition-colors ${isActive ? activeLinkClass : defaultLinkClass}`
+                }
               >
                 {link.name}
-              </Link>
+              </NavLink>
             ))}
 
-            {/* Theme Toggle  */}
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label="Toggle theme"
             >
               {theme === "dark" ? (
                 <Sun size={20} className="text-yellow-400" />
@@ -89,17 +101,23 @@ const Navbar = ({ theme, toggleTheme }) => {
             {user ? (
               <div className="relative profile-dropdown">
                 <button
-                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsProfileOpen(!isProfileOpen);
+                  }}
                   className="flex items-center space-x-2 p-1 rounded-full border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow"
                 >
                   <img
-                    src={user.photoURL}
+                    src={
+                      user.photoURL ||
+                      `https://ui-avatars.com/api/?name=${user.displayName}&background=534AB7&color=fff`
+                    }
                     alt="profile"
                     className="w-8 h-8 rounded-full object-cover"
                   />
                   <ChevronDown
                     size={16}
-                    className={`transition-transform ${isProfileOpen ? "rotate-180" : ""}`}
+                    className={`transition-transform text-slate-500 dark:text-slate-400 ${isProfileOpen ? "rotate-180" : ""}`}
                   />
                 </button>
 
@@ -109,44 +127,41 @@ const Navbar = ({ theme, toggleTheme }) => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-3 w-48 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 py-2"
+                      className="absolute right-0 mt-3 w-52 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 py-2 z-50"
                     >
                       <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700">
                         <div className="flex items-center space-x-3">
                           <img
-                            src={user.photoURL || "https://i.pravatar.cc/100"}
+                            src={
+                              user.photoURL ||
+                              `https://ui-avatars.com/api/?name=${user.displayName}&background=534AB7&color=fff`
+                            }
                             alt="profile"
                             className="w-10 h-10 rounded-full object-cover"
                           />
-                          <div className="flex-1">
-                            <p className="text-sm font-bold truncate">
-                              {user.displayName}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold truncate text-slate-900 dark:text-white">
+                              {user.displayName || "User"}
                             </p>
-                            <span
-                              className={`text-xs px-2 py-0.5 rounded-full text-white ${
-                                user?.role === "Admin"
-                                  ? "bg-red-500"
-                                  : user?.role === "Creator"
-                                    ? "bg-[#534AB7]"
-                                    : "bg-blue-500"
-                              }`}
-                            >
-                              {user?.role || "User"}
-                            </span>
                           </div>
                         </div>
                       </div>
+
                       <Link
                         to="/dashboard"
-                        className="flex items-center space-x-2 px-4 py-2 text-sm hover:bg-cyan-50 dark:hover:bg-slate-700 transition-colors"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-[#EEEDFE] dark:hover:bg-slate-700 hover:text-[#534AB7] transition-colors"
                       >
-                        <LayoutDashboard size={16} /> <span>Dashboard</span>
+                        <LayoutDashboard size={16} />
+                        <span>Dashboard</span>
                       </Link>
+
                       <button
-                        onClick={logoutUser}
-                        className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                        onClick={handleLogout}
+                        className="w-full flex items-center space-x-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                       >
-                        <LogOut size={16} /> <span>Logout</span>
+                        <LogOut size={16} />
+                        <span>Logout</span>
                       </button>
                     </motion.div>
                   )}
@@ -155,27 +170,41 @@ const Navbar = ({ theme, toggleTheme }) => {
             ) : (
               <Link
                 to="/login"
-                className="bg-[#534AB7] hover:bg-[#3C3489] text-white px-6 py-2 rounded-full font-medium transition-colors"
+                className="bg-[#534AB7] hover:bg-[#3C3489] text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Join Now
               </Link>
             )}
           </div>
 
-          <div className="md:hidden flex items-center space-x-4">
-            <button onClick={toggleTheme}>
-              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+          {/* Mobile right side */}
+          <div className="md:hidden flex items-center space-x-3">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? (
+                <Sun size={20} className="text-yellow-400" />
+              ) : (
+                <Moon
+                  size={20}
+                  className="text-slate-600 dark:text-slate-300"
+                />
+              )}
             </button>
+
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-slate-600 dark:text-white"
             >
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
+              {isOpen ? <X size={26} /> : <Menu size={26} />}
             </button>
           </div>
         </div>
       </div>
 
+      {/* Mobile menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -184,23 +213,63 @@ const Navbar = ({ theme, toggleTheme }) => {
             exit={{ height: 0, opacity: 0 }}
             className="md:hidden bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 overflow-hidden"
           >
-            <div className="px-4 pt-2 pb-6 space-y-2">
+            <div className="px-4 pt-2 pb-6 space-y-1">
               {navLinks.map((link) => (
-                <Link
+                <NavLink
                   key={link.name}
                   to={link.path}
-                  className="block px-3 py-4 text-base font-medium border-b border-slate-50 dark:border-slate-800"
                   onClick={() => setIsOpen(false)}
+                  className={({ isActive }) =>
+                    `block px-3 py-3 text-sm font-medium rounded-xl transition-colors ${
+                      isActive
+                        ? "bg-[#EEEDFE] dark:bg-[#534AB7]/20 text-[#534AB7]"
+                        : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                    }`
+                  }
                 >
                   {link.name}
-                </Link>
+                </NavLink>
               ))}
-              {!user && (
+
+              {user ? (
+                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-1">
+                  <div className="flex items-center gap-3 px-3 py-2">
+                    <img
+                      src={
+                        user.photoURL ||
+                        `https://ui-avatars.com/api/?name=${user.displayName}&background=534AB7&color=fff`
+                      }
+                      alt="profile"
+                      className="w-9 h-9 rounded-full object-cover"
+                    />
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                        {user.displayName || "User"}
+                      </p>
+                      <p className="text-xs text-slate-400">{user.email}</p>
+                    </div>
+                  </div>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                  >
+                    <LayoutDashboard size={16} /> Dashboard
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
+                  >
+                    <LogOut size={16} /> Logout
+                  </button>
+                </div>
+              ) : (
                 <Link
                   to="/login"
-                  className="block w-full text-center mt-4 bg-[#534AB7] text-white py-3 rounded-xl font-medium"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full text-center mt-3 bg-[#534AB7] text-white py-3 rounded-xl text-sm font-medium"
                 >
-                  Login / Register
+                  Join Now
                 </Link>
               )}
             </div>
