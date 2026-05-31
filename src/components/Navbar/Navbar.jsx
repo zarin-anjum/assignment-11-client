@@ -64,7 +64,7 @@ const Navbar = ({ theme, toggleTheme }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-9 h-9 bg-[#534AB7] rounded-xl flex items-center justify-center shadow-sm group-hover:rotate-12 transition-transform">
+            <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-sm group-hover:rotate-12 transition-transform">
               <span className="text-white font-bold text-lg">C</span>
             </div>
             <span className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -73,7 +73,7 @@ const Navbar = ({ theme, toggleTheme }) => {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-4">
             {navLinks.map((link) => (
               <NavLink
                 key={link.name}
@@ -107,14 +107,17 @@ const Navbar = ({ theme, toggleTheme }) => {
                   }}
                   className="flex items-center space-x-2 p-1 rounded-full border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow"
                 >
-                  <img
-                    src={
-                      user.photoURL ||
-                      `https://ui-avatars.com/api/?name=${user.displayName}&background=534AB7&color=fff`
-                    }
-                    alt="profile"
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
+                  {user.photoURL ? (
+                    <img
+                      src={user.photoURL}
+                      alt="profile"
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold">
+                      {user.displayName?.charAt(0).toUpperCase() || "U"}
+                    </div>
+                  )}
                   <ChevronDown
                     size={16}
                     className={`transition-transform text-slate-500 dark:text-slate-400 ${isProfileOpen ? "rotate-180" : ""}`}
@@ -131,14 +134,17 @@ const Navbar = ({ theme, toggleTheme }) => {
                     >
                       <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700">
                         <div className="flex items-center space-x-3">
-                          <img
-                            src={
-                              user.photoURL ||
-                              `https://ui-avatars.com/api/?name=${user.displayName}&background=534AB7&color=fff`
-                            }
-                            alt="profile"
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
+                          {user.photoURL ? (
+                            <img
+                              src={user.photoURL}
+                              alt="profile"
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold">
+                              {user.displayName?.charAt(0).toUpperCase() || "U"}
+                            </div>
+                          )}
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-bold truncate text-slate-900 dark:text-white">
                               {user.displayName || "User"}
@@ -150,7 +156,7 @@ const Navbar = ({ theme, toggleTheme }) => {
                       <Link
                         to="/dashboard"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-[#EEEDFE] dark:hover:bg-slate-700 hover:text-[#534AB7] transition-colors"
+                        className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-primary-light dark:hover:bg-slate-700 hover:text-primary transition-colors"
                       >
                         <LayoutDashboard size={16} />
                         <span>Dashboard</span>
@@ -170,7 +176,7 @@ const Navbar = ({ theme, toggleTheme }) => {
             ) : (
               <Link
                 to="/login"
-                className="bg-[#534AB7] hover:bg-[#3C3489] text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-primary hover:bg-primary-dark text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Join Now
               </Link>
@@ -222,7 +228,7 @@ const Navbar = ({ theme, toggleTheme }) => {
                   className={({ isActive }) =>
                     `block px-3 py-3 text-sm font-medium rounded-xl transition-colors ${
                       isActive
-                        ? "bg-[#EEEDFE] dark:bg-[#534AB7]/20 text-[#534AB7]"
+                        ? "bg-primary-light dark:bg-primary/20 text-primary"
                         : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
                     }`
                   }
@@ -267,7 +273,7 @@ const Navbar = ({ theme, toggleTheme }) => {
                 <Link
                   to="/login"
                   onClick={() => setIsOpen(false)}
-                  className="block w-full text-center mt-3 bg-[#534AB7] text-white py-3 rounded-xl text-sm font-medium"
+                  className="block w-full text-center mt-3 bg-primary text-white py-3 rounded-xl text-sm font-medium"
                 >
                   Join Now
                 </Link>

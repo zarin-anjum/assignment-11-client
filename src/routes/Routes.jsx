@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import Root from "../pages/Root/Root";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Auth/Login";
@@ -21,6 +21,15 @@ import PaymentSuccess from "../pages/Payment/PaymentSuccess";
 import Leaderboard from "../pages/Leaderboard/Leaderboard";
 import Contact from "../pages/Contact/Contact";
 import Impact from "../pages/Impact/Impact";
+import useUserRole from "../hooks/useUserRole";
+
+const DashboardRedirect = () => {
+  const { role, isLoading } = useUserRole();
+  if (isLoading) return null;
+  if (role === "admin") return <Navigate to="/dashboard/manage-users" replace />;
+  if (role === "creator") return <Navigate to="/dashboard/my-contests" replace />;
+  return <Navigate to="/dashboard/my-participated" replace />;
+};
 
 const router = createBrowserRouter([
   {
@@ -64,6 +73,7 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
         children: [
+          { index: true, element: <DashboardRedirect /> },
           // user
           { path: "my-participated", element: <MyParticipated /> },
           { path: "my-winnings", element: <MyWinnings /> },

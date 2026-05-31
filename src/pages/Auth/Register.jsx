@@ -1,201 +1,192 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { updateProfile } from "firebase/auth";
 import toast from "react-hot-toast";
-import { Helmet } from "react-helmet";
+import { Loader2, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+
+const getFriendlyError = (error) => {
+  switch (error.code) {
+    case "auth/email-already-in-use":
+      return "This email is already registered.";
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+    case "auth/weak-password":
+      return "Password is too weak. Use at least 6 characters.";
+    default:
+      return "Registration failed. Please try again.";
+  }
+};
+
+const inputClass = "w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white placeholder:text-slate-400 outline-none focus:border-[#534AB7] transition-colors";
+const labelClass = "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5";
 
 const Register = () => {
   const { createUser, googleLogin, syncUserToBackend } = useAuth();
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const togglePassword = () => setShowPassword(!showPassword);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
-  const getFriendlyError = (error) => {
-    const code = error.code || "";
-    switch (code) {
-      case "auth/email-already-in-use":
-        return "This email is already registered.";
-      case "auth/invalid-email":
-        return "Please enter a valid email address.";
-      case "auth/weak-password":
-        return "Password is too weak. Use at least 6 characters.";
-      default:
-        return "Registration failed. Please try again.";
-    }
-  };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-
-    const name = e.target.name.value;
-    const photoURL = e.target.photoURL.value;
-    const email = e.target.email.value;
-    const password = e.target.password.value;
-
-    // Password validation
-    const uppercase = /[A-Z]/.test(password);
-    const lowercase = /[a-z]/.test(password);
-    if (!uppercase || !lowercase || password.length < 6) {
-      toast.error(
-        "Password must include uppercase, lowercase letters, and at least 6 characters.",
-        {
-          style: {
-            borderRadius: "10px",
-            background: "#FEE2E2",
-            color: "#B91C1C",
-          },
-        },
-      );
-      setLoading(false);
-      return;
-    }
-
+  const onSubmit = async (data) => {
     try {
-      const result = await createUser(email, password);
+      const result = await createUser(data.email, data.password);
 
-      // Update profile
       await updateProfile(result.user, {
-        displayName: name,
-        photoURL: photoURL,
+        displayName: data.name,
+        photoURL: data.photoURL || "",
       });
 
-      await syncUserToBackend(result.user, name);
+      await syncUserToBackend(result.user, data.name);
 
-      toast.success("Registration successful!", {
-        style: {
-          borderRadius: "10px",
-          background: "#DCFCE7",
-          color: "#166534",
-        },
-      });
-      e.target.reset();
+      toast.success("Registration successful!");
       navigate("/");
     } catch (err) {
-      console.log("Firebase registration error:", err);
-      const message = getFriendlyError(err);
-      toast.error(message, {
-        style: {
-          borderRadius: "10px",
-          background: "#FEE2E2",
-          color: "#B91C1C",
-        },
-      });
-    } finally {
-      setLoading(false);
+      toast.error(getFriendlyError(err));
     }
   };
 
   const handleGoogleLogin = async () => {
     try {
       await googleLogin();
-      toast.success("Logged in with Google!", {
-        style: {
-          borderRadius: "10px",
-          background: "#DCFCE7",
-          color: "#166534",
-        },
-      });
+      toast.success("Logged in with Google!");
       navigate("/");
     } catch (err) {
-      const message = getFriendlyError(err);
-      toast.error(message, {
-        style: {
-          borderRadius: "10px",
-          background: "#FEE2E2",
-          color: "#B91C1C",
-        },
-      });
+      toast.error("Google login failed. Try again.");
     }
   };
 
   return (
-    <div className="lg:min-h-screen p-12 flex justify-center items-center bg-blue-50">
-      <Helmet>
-        <title>ContestHub – Registration</title>
-      </Helmet>
-      <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-lg">
-        <h2 className="text-lg md:text-2xl font-semibold text-center mb-6">
-          Register
-        </h2>
+    <div className="min-h-screen flex justify-center items-center bg-slate-50 dark:bg-slate-900 px-4 py-12">
+      <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-8">
 
-        <form onSubmit={handleRegister} className="space-y-2 md:space-y-4">
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 mb-6">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">C</span>
+            </div>
+            <span className="font-semibold text-slate-900 dark:text-white">ContestHub</span>
+          </Link>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Create an account
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Join ContestHub and start competing
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
+            <label className={labelClass}>Full Name</label>
             <input
               type="text"
-              name="name"
-              className="w-full border px-3 py-2 rounded-lg"
-              required
+              placeholder="John Doe"
+              className={inputClass}
+              {...register("name", { required: "Name is required" })}
+            />
+            {errors.name && (
+              <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className={labelClass}>Photo URL <span className="text-slate-400 font-normal">(optional)</span></label>
+            <input
+              type="text"
+              placeholder="https://example.com/photo.jpg"
+              className={inputClass}
+              {...register("photoURL")}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Photo URL</label>
-            <input
-              type="text"
-              name="photoURL"
-              className="w-full border px-3 py-2 rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className={labelClass}>Email</label>
             <input
               type="email"
-              name="email"
-              className="w-full border px-3 py-2 rounded-lg"
-              required
+              placeholder="you@example.com"
+              className={inputClass}
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Invalid email address",
+                },
+              })}
             />
+            {errors.email && (
+              <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
+            )}
           </div>
 
-          <div className="relative">
-            <label className="block text-sm font-medium mb-1">Password</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              className="w-full border px-3 py-2 rounded-lg"
-              required
-            />
-            <button
-              type="button"
-              onClick={togglePassword}
-              className="absolute top-2 right-2 text-gray-500"
-            ></button>
+          <div>
+            <label className={labelClass}>Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                className={inputClass}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: { value: 6, message: "At least 6 characters" },
+                  validate: {
+                    hasUppercase: (v) =>
+                      /[A-Z]/.test(v) || "Must contain an uppercase letter",
+                    hasLowercase: (v) =>
+                      /[a-z]/.test(v) || "Must contain a lowercase letter",
+                  },
+                })}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>
+            )}
           </div>
-
-          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
-          {success && (
-            <p className="text-green-600 text-sm text-center">{success}</p>
-          )}
 
           <button
             type="submit"
-            className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition"
+            disabled={isSubmitting}
+            className="w-full py-2.5 rounded-xl text-sm font-semibold bg-primary hover:bg-primary-dark text-white transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
           >
-            Register
+            {isSubmitting ? (
+              <><Loader2 size={16} className="animate-spin" /> Creating account...</>
+            ) : (
+              "Create account"
+            )}
           </button>
         </form>
 
-        <p className="text-center mt-4 text-sm">
-          Already have an account?{" "}
-          <Link to="/login" className="text-purple-600 underline">
-            Login
-          </Link>
-        </p>
+        <div className="flex items-center gap-3 my-5">
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+          <span className="text-xs text-slate-400">or</span>
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+        </div>
 
         <button
           onClick={handleGoogleLogin}
-          className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition"
+          className="w-full py-2.5 rounded-xl text-sm font-medium border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2"
         >
-          Register with Google
+          <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
+          Continue with Google
         </button>
+
+        <p className="text-center text-sm text-slate-500 dark:text-slate-400 mt-6">
+          Already have an account?{" "}
+          <Link to="/login" className="text-primary font-medium hover:underline">
+            Sign in
+          </Link>
+        </p>
       </div>
     </div>
   );

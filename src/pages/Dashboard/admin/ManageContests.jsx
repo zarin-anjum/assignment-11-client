@@ -4,7 +4,7 @@ import { Loader2, Check, X, Trash2, ChevronLeft, ChevronRight } from "lucide-rea
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 5;
 
 const statusBadge = {
   pending:  "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
@@ -36,7 +36,6 @@ const ManageContests = () => {
     mutationFn: (id) => axiosSecure.delete(`/contests/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries(["adminContests"]);
-      // if current page becomes empty after delete, go back one page
       const newTotal = contests.length - 1;
       const newTotalPages = Math.ceil(newTotal / ITEMS_PER_PAGE);
       if (currentPage > newTotalPages) setCurrentPage(Math.max(1, newTotalPages));
@@ -66,7 +65,7 @@ const ManageContests = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center py-20">
-        <Loader2 size={28} className="animate-spin text-[#534AB7]" />
+        <Loader2 size={28} className="animate-spin text-primary" />
       </div>
     );
   }
@@ -197,7 +196,7 @@ const ManageContests = () => {
                     onClick={() => goToPage(page)}
                     className={`w-8 h-8 rounded-lg text-xs font-medium transition-colors ${
                       page === currentPage
-                        ? "bg-[#534AB7] text-white"
+                        ? "bg-primary text-white"
                         : "border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
                     }`}
                   >
