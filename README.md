@@ -4,7 +4,16 @@ A modern, full-stack contest management platform where users can discover, parti
 
 ## 🌐 Live Site
 
-https://contesthub-zarin.netlify.app
+https://upgrade-contesthub-zarin.netlify.app/
+
+## 🔑 Test Credentials
+ 
+**Admin Account:**
+- Email: admin01@contesthub.com
+- Password: *(your admin password)*
+**Creator Account:**
+- Email: creator01@contesthub.com
+- Password: *(your creator password)*
 
 ## ✨ Features
 
@@ -71,5 +80,8 @@ https://contesthub-zarin.netlify.app
 - `cors`
 - `dotenv`
 
-
+**Clone the repositories:**
+```bash
+git clone https://github.com/yourusername/contesthub-client
+git clone https://github.com/yourusername/contesthub-server
 ```
