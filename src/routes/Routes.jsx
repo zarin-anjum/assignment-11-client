@@ -26,8 +26,10 @@ import useUserRole from "../hooks/useUserRole";
 const DashboardRedirect = () => {
   const { role, isLoading } = useUserRole();
   if (isLoading) return null;
-  if (role === "admin") return <Navigate to="/dashboard/manage-users" replace />;
-  if (role === "creator") return <Navigate to="/dashboard/my-contests" replace />;
+  if (role === "admin")
+    return <Navigate to="/dashboard/manage-users" replace />;
+  if (role === "creator")
+    return <Navigate to="/dashboard/my-contests" replace />;
   return <Navigate to="/dashboard/my-participated" replace />;
 };
 
@@ -59,11 +61,7 @@ const router = createBrowserRouter([
       },
       {
         path: "contest/:id",
-        element: (
-          <PrivateRoute>
-            <ContestDetails></ContestDetails>
-          </PrivateRoute>
-        ),
+        element: <ContestDetails></ContestDetails>,
       },
       {
         path: "dashboard",

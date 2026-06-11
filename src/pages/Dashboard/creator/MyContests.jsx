@@ -5,8 +5,10 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 
 const statusBadge = {
-  pending:  "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
-  approved: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  pending:
+    "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+  approved:
+    "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
   rejected: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 };
 
@@ -14,7 +16,11 @@ const MyContests = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
 
-  const { data: contests = [], isLoading, isError } = useQuery({
+  const {
+    data: contests = [],
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["myContests"],
     queryFn: () => axiosSecure.get("/contests/my").then((r) => r.data),
   });
@@ -28,10 +34,20 @@ const MyContests = () => {
     onError: () => toast.error("Failed to delete"),
   });
 
+  const totalContests = contests.length;
+  const approvedContests = contests.filter(
+    (c) => c.status === "approved",
+  ).length;
+  const pendingContests = contests.filter((c) => c.status === "pending").length;
+  const totalSubmissions = contests.reduce(
+    (acc, c) => acc + (c.submissions?.length || 0),
+    0,
+  );
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-20">
-        <Loader2 size={28} className="animate-spin text-[#534AB7]" />
+        <Loader2 size={28} className="animate-spin text-primary" />
       </div>
     );
   }
@@ -49,10 +65,57 @@ const MyContests = () => {
         </div>
         <Link
           to="/dashboard/add-contest"
-          className="text-sm px-4 py-2 rounded-xl bg-[#534AB7] hover:bg-[#3C3489] text-white font-medium transition-colors"
+          className="text-sm px-4 py-2 rounded-xl bg-primary hover:bg-primary-dark text-white font-medium transition-colors"
         >
           + Add Contest
         </Link>
+      </div>
+
+      {/* Overview cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {[
+          {
+            label: "Total Contests",
+            value: totalContests,
+            color: "bg-[#EEEDFE] dark:bg-[#534AB7]/20 text-[#534AB7]",
+            icon: "🏆",
+          },
+          {
+            label: "Approved",
+            value: approvedContests,
+            color: "bg-green-50 dark:bg-green-900/20 text-green-600",
+            icon: "✅",
+          },
+          {
+            label: "Pending",
+            value: pendingContests,
+            color: "bg-amber-50 dark:bg-amber-900/20 text-amber-600",
+            icon: "⏳",
+          },
+          {
+            label: "Total Submissions",
+            value: totalSubmissions,
+            color: "bg-blue-50 dark:bg-blue-900/20 text-blue-600",
+            icon: "📥",
+          },
+        ].map(({ label, value, color, icon }) => (
+          <div
+            key={label}
+            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4"
+          >
+            <div
+              className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg mb-3 ${color}`}
+            >
+              {icon}
+            </div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+              {value}
+            </div>
+            <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+              {label}
+            </div>
+          </div>
+        ))}
       </div>
 
       {contests.length === 0 && (
@@ -61,7 +124,7 @@ const MyContests = () => {
           <p className="text-sm font-medium">No contests yet</p>
           <Link
             to="/dashboard/add-contest"
-            className="text-xs text-[#534AB7] hover:underline mt-2 inline-block"
+            className="text-xs text-primary hover:underline mt-2 inline-block"
           >
             Create your first contest →
           </Link>
@@ -74,16 +137,29 @@ const MyContests = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
-                  <th className="text-left px-5 py-3.5 font-medium text-slate-500 dark:text-slate-400">Contest</th>
-                  <th className="text-left px-5 py-3.5 font-medium text-slate-500 dark:text-slate-400">Type</th>
-                  <th className="text-left px-5 py-3.5 font-medium text-slate-500 dark:text-slate-400">Deadline</th>
-                  <th className="text-left px-5 py-3.5 font-medium text-slate-500 dark:text-slate-400">Status</th>
-                  <th className="text-left px-5 py-3.5 font-medium text-slate-500 dark:text-slate-400">Actions</th>
+                  <th className="text-left px-5 py-3.5 font-medium text-slate-500 dark:text-slate-400">
+                    Contest
+                  </th>
+                  <th className="text-left px-5 py-3.5 font-medium text-slate-500 dark:text-slate-400">
+                    Type
+                  </th>
+                  <th className="text-left px-5 py-3.5 font-medium text-slate-500 dark:text-slate-400">
+                    Deadline
+                  </th>
+                  <th className="text-left px-5 py-3.5 font-medium text-slate-500 dark:text-slate-400">
+                    Status
+                  </th>
+                  <th className="text-left px-5 py-3.5 font-medium text-slate-500 dark:text-slate-400">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                 {contests.map((contest) => (
-                  <tr key={contest._id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                  <tr
+                    key={contest._id}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors"
+                  >
                     <td className="px-5 py-4 font-medium text-slate-800 dark:text-white">
                       {contest.contestName}
                     </td>
@@ -92,11 +168,15 @@ const MyContests = () => {
                     </td>
                     <td className="px-5 py-4 text-slate-500 dark:text-slate-400">
                       {new Date(contest.deadline).toLocaleDateString("en-US", {
-                        month: "short", day: "numeric", year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
                       })}
                     </td>
                     <td className="px-5 py-4">
-                      <span className={`text-xs px-2.5 py-1 rounded-full font-medium capitalize ${statusBadge[contest.status]}`}>
+                      <span
+                        className={`text-xs px-2.5 py-1 rounded-full font-medium capitalize ${statusBadge[contest.status]}`}
+                      >
                         {contest.status}
                       </span>
                     </td>
@@ -108,7 +188,7 @@ const MyContests = () => {
                         >
                           <Eye size={13} /> Submissions
                         </Link>
-    
+
                         {contest.status === "pending" && (
                           <>
                             <Link

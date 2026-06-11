@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { ChevronRight, Loader2 } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import ContestCard from "../ContestCard/ContestCard";
 
@@ -25,9 +25,7 @@ const PopularContests = () => {
   } = useQuery({
     queryKey: ["popularContests"],
     queryFn: () =>
-      axiosPublic
-        .get("/contests?sort=popular&limit=6")
-        .then((r) => r.data),
+      axiosPublic.get("/contests?sort=popular&limit=6").then((r) => r.data),
   });
 
   const filtered =
@@ -68,9 +66,7 @@ const PopularContests = () => {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`text-xs px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
-                activeTab === tab
-                  ? tabClass.active
-                  : tabClass.inactive
+                activeTab === tab ? tabClass.active : tabClass.inactive
               }`}
             >
               {tab}
@@ -79,8 +75,24 @@ const PopularContests = () => {
         </div>
 
         {isLoading && (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 size={28} className="animate-spin text-primary" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden animate-pulse"
+              >
+                <div className="h-28 bg-slate-200 dark:bg-slate-700" />
+                <div className="p-4 space-y-3">
+                  <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded-lg w-3/4" />
+                  <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded-lg w-full" />
+                  <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded-lg w-2/3" />
+                  <div className="flex justify-between items-center pt-2">
+                    <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded-lg w-1/3" />
+                    <div className="h-7 bg-slate-200 dark:bg-slate-700 rounded-lg w-1/4" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -101,7 +113,7 @@ const PopularContests = () => {
         )}
 
         {!isLoading && !isError && filtered.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {filtered.map((contest) => (
               <ContestCard key={contest._id} contest={contest} />
             ))}

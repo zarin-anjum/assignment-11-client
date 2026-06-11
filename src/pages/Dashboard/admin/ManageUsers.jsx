@@ -29,6 +29,18 @@ const ManageUsers = () => {
     onError: () => toast.error("Failed to update role"),
   });
 
+  const { data: contests = [] } = useQuery({
+    queryKey: ["adminContests"],
+    queryFn: () => axiosSecure.get("/contests/all-admin").then((r) => r.data),
+  });
+
+  const totalUsers = users.length;
+  const totalContests = contests.length;
+  const pendingContests = contests.filter((c) => c.status === "pending").length;
+  const approvedContests = contests.filter(
+    (c) => c.status === "approved",
+  ).length;
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-20">
@@ -55,6 +67,57 @@ const ManageUsers = () => {
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           {users.length} total users
         </p>
+      </div>
+
+      {/* Overview cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {[
+          {
+            label: "Total Users",
+            value: totalUsers,
+            color:
+              "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400",
+            icon: "👥",
+          },
+          {
+            label: "Total Contests",
+            value: totalContests,
+            color:
+              "bg-[#EEEDFE] dark:bg-[#534AB7]/20 text-[#534AB7] dark:text-purple-300",
+            icon: "🏆",
+          },
+          {
+            label: "Pending Approval",
+            value: pendingContests,
+            color:
+              "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400",
+            icon: "⏳",
+          },
+          {
+            label: "Approved",
+            value: approvedContests,
+            color:
+              "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400",
+            icon: "✅",
+          },
+        ].map(({ label, value, color, icon }) => (
+          <div
+            key={label}
+            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4"
+          >
+            <div
+              className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg mb-3 ${color}`}
+            >
+              {icon}
+            </div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+              {value}
+            </div>
+            <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+              {label}
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">

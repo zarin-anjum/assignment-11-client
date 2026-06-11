@@ -22,8 +22,10 @@ const getFriendlyError = (error) => {
   }
 };
 
-const inputClass = "w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white placeholder:text-slate-400 outline-none focus:border-[#534AB7] transition-colors";
-const labelClass = "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5";
+const inputClass =
+  "w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white placeholder:text-slate-400 outline-none focus:border-[#534AB7] transition-colors";
+const labelClass =
+  "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5";
 
 const Login = () => {
   const { loginUser, googleLogin } = useAuth();
@@ -33,6 +35,7 @@ const Login = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -59,13 +62,14 @@ const Login = () => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-slate-50 dark:bg-slate-900 px-4 py-12">
       <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-8">
-
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">C</span>
             </div>
-            <span className="font-semibold text-slate-900 dark:text-white">ContestHub</span>
+            <span className="font-semibold text-slate-900 dark:text-white">
+              ContestHub
+            </span>
           </Link>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
             Welcome back
@@ -91,7 +95,9 @@ const Login = () => {
               })}
             />
             {errors.email && (
-              <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
+              <p className="text-xs text-red-500 mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
@@ -108,7 +114,10 @@ const Login = () => {
                 className={inputClass}
                 {...register("password", {
                   required: "Password is required",
-                  minLength: { value: 6, message: "Password must be at least 6 characters" },
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
                 })}
               />
               <button
@@ -120,7 +129,9 @@ const Login = () => {
               </button>
             </div>
             {errors.password && (
-              <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>
+              <p className="text-xs text-red-500 mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
@@ -130,7 +141,9 @@ const Login = () => {
             className="w-full py-2.5 rounded-xl text-sm font-semibold bg-primary hover:bg-primary-dark text-white transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
           >
             {isSubmitting ? (
-              <><Loader2 size={16} className="animate-spin" /> Signing in...</>
+              <>
+                <Loader2 size={16} className="animate-spin" /> Signing in...
+              </>
             ) : (
               "Sign in"
             )}
@@ -147,13 +160,47 @@ const Login = () => {
           onClick={handleGoogleLogin}
           className="w-full py-2.5 rounded-xl text-sm font-medium border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2"
         >
-          <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
+          <img
+            src="https://www.google.com/favicon.ico"
+            alt="Google"
+            className="w-4 h-4"
+          />
           Continue with Google
         </button>
 
+        {/* Demo credentials */}
+        <div className="mt-4 space-y-2">
+          <p className="text-xs text-center text-slate-400 dark:text-slate-500 mb-2">
+            Demo credentials
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setValue("email", "admin01@contesthub.com");
+              setValue("password", "admin05_ContestHub");
+            }}
+            className="w-full py-2 rounded-xl text-xs font-medium border border-red-200 dark:border-red-800 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          >
+            Login as Admin
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setValue("email", "creator01@contesthub.com");
+              setValue("password", "creator07_ContestHub");
+            }}
+            className="w-full py-2 rounded-xl text-xs font-medium border border-primary/30 dark:border-primary/50 text-primary hover:bg-primary-light dark:hover:bg-primary/20 transition-colors"
+          >
+            Login as Creator
+          </button>
+        </div>
+
         <p className="text-center text-sm text-slate-500 dark:text-slate-400 mt-6">
           Don't have an account?{" "}
-          <Link to="/register" className="text-primary font-medium hover:underline">
+          <Link
+            to="/register"
+            className="text-primary font-medium hover:underline"
+          >
             Register here
           </Link>
         </p>

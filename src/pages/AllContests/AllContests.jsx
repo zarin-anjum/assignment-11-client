@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Loader2 } from "lucide-react";
+import { Search } from "lucide-react";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import ContestCard from "../../components/ContestCard/ContestCard";
 
@@ -69,7 +69,7 @@ const AllContests = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-24 pb-16 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
-          <p className="text-xs font-medium text-[#534AB7] uppercase tracking-widest mb-1">
+          <p className="text-xs font-medium text-primary uppercase tracking-widest mb-1">
             Browse
           </p>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -83,7 +83,7 @@ const AllContests = () => {
 
         <form
           onSubmit={handleSearch}
-          className="flex items-center max-w-md mb-8 rounded-xl overflow-hidden border-2 border-[#534AB7]/30 hover:border-[#534AB7]/60 focus-within:border-[#534AB7] bg-white dark:bg-slate-800 shadow-sm transition-colors"
+          className="flex items-center max-w-md mb-8 rounded-xl overflow-hidden border-2 border-primary/30 hover:border-primary/60 focus-within:border-primary bg-white dark:bg-slate-800 shadow-sm transition-colors"
         >
           <Search size={16} className="ml-4 text-slate-400 shrink-0" />
           <input
@@ -95,7 +95,7 @@ const AllContests = () => {
           />
           <button
             type="submit"
-            className="bg-[#534AB7] hover:bg-[#3C3489] text-white px-5 py-3 text-sm font-medium transition-colors shrink-0"
+            className="bg-primary hover:bg-primary-dark text-white px-5 py-3 text-sm font-medium transition-colors shrink-0"
           >
             Search
           </button>
@@ -105,9 +105,7 @@ const AllContests = () => {
           <div className="flex items-center gap-2 mb-6">
             <span className="text-sm text-slate-500 dark:text-slate-400">
               Results for{" "}
-              <span className="font-medium text-[#534AB7]">
-                "{activeSearch}"
-              </span>
+              <span className="font-medium text-primary">"{activeSearch}"</span>
             </span>
             <button
               onClick={() => {
@@ -136,8 +134,24 @@ const AllContests = () => {
         </div>
 
         {isLoading && (
-          <div className="flex justify-center items-center py-24">
-            <Loader2 size={28} className="animate-spin text-[#534AB7]" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden animate-pulse"
+              >
+                <div className="h-28 bg-slate-200 dark:bg-slate-700" />
+                <div className="p-4 space-y-3">
+                  <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded-lg w-3/4" />
+                  <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded-lg w-full" />
+                  <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded-lg w-2/3" />
+                  <div className="flex justify-between items-center pt-2">
+                    <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded-lg w-1/3" />
+                    <div className="h-7 bg-slate-200 dark:bg-slate-700 rounded-lg w-1/4" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -159,7 +173,7 @@ const AllContests = () => {
         )}
 
         {!isLoading && !isError && filtered.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {filtered.map((contest) => (
               <ContestCard key={contest._id} contest={contest} />
             ))}
