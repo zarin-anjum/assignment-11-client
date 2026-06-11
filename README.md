@@ -10,10 +10,10 @@ https://upgrade-contesthub-zarin.netlify.app/
  
 **Admin Account:**
 - Email: admin01@contesthub.com
-- Password: *(your admin password)*
+- Password: admin05_ContestHub
 **Creator Account:**
 - Email: creator01@contesthub.com
-- Password: *(your creator password)*
+- Password: creator07_ContestHub
 
 ## ✨ Features
 
