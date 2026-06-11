@@ -25,7 +25,7 @@ const PopularContests = () => {
   } = useQuery({
     queryKey: ["popularContests"],
     queryFn: () =>
-      axiosPublic.get("/contests?sort=popular&limit=6").then((r) => r.data),
+      axiosPublic.get("/contests?sort=popular&limit=4").then((r) => r.data),
   });
 
   const filtered =
