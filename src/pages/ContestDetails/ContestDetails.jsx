@@ -97,7 +97,7 @@ const ContestDetails = () => {
         </h2>
         <button
           onClick={() => navigate("/all-contests")}
-          className="mt-4 text-sm text-[#534AB7] hover:underline flex items-center gap-1"
+          className="mt-4 text-sm text-primary hover:underline flex items-center gap-1"
         >
           <ArrowLeft size={14} /> Back to all contests
         </button>
@@ -108,7 +108,7 @@ const ContestDetails = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
-        <Loader2 size={32} className="animate-spin text-[#534AB7]" />
+        <Loader2 size={32} className="animate-spin text-primary" />
       </div>
     );
   }
@@ -122,7 +122,7 @@ const ContestDetails = () => {
         </h2>
         <button
           onClick={() => navigate("/all-contests")}
-          className="mt-4 text-sm text-[#534AB7] hover:underline flex items-center gap-1"
+          className="mt-4 text-sm text-primary hover:underline flex items-center gap-1"
         >
           <ArrowLeft size={14} /> Back to all contests
         </button>
@@ -135,6 +135,11 @@ const ContestDetails = () => {
     "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300";
 
   const handleRegister = async () => {
+    if (!user) {
+      navigate("/login", { state: { from: { pathname: `/contest/${id}` } } });
+      return;
+    }
+
     try {
       const { data } = await axiosSecure.post(
         "/payment/create-checkout-session",
@@ -173,7 +178,7 @@ const ContestDetails = () => {
       <div className="max-w-4xl mx-auto">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-[#534AB7] transition-colors mb-6"
+          className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-primary transition-colors mb-6"
         >
           <ArrowLeft size={15} />
           Back
@@ -251,7 +256,7 @@ const ContestDetails = () => {
                 <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                   <Trophy size={13} /> Prize money
                 </span>
-                <span className="text-sm font-bold text-[#534AB7]">
+                <span className="text-sm font-bold text-primary">
                   ${contest.prizeMoney}
                 </span>
               </div>
@@ -313,7 +318,7 @@ const ContestDetails = () => {
                     onClick={handleRegister}
                     disabled={isEnded}
                     className="w-full py-2.5 rounded-xl text-sm font-semibold transition-colors
-                      bg-[#534AB7] hover:bg-[#3C3489] text-white
+                      bg-primary hover:bg-primary-dark text-white
                       disabled:bg-slate-200 disabled:dark:bg-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed"
                   >
                     {isEnded
@@ -385,12 +390,12 @@ const ContestDetails = () => {
                 onChange={(e) => setTaskLink(e.target.value)}
                 rows={4}
                 placeholder="https://your-submission-link.com"
-                className="w-full text-sm px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white placeholder:text-slate-400 outline-none focus:border-[#534AB7] resize-none transition-colors"
+                className="w-full text-sm px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white placeholder:text-slate-400 outline-none focus:border-primary resize-none transition-colors"
               />
               <button
                 type="submit"
                 disabled={!taskLink.trim() || isSubmitting}
-                className="w-full py-2.5 rounded-xl text-sm font-semibold bg-[#534AB7] hover:bg-[#3C3489] text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-2.5 rounded-xl text-sm font-semibold bg-primary hover:bg-primary-dark text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? "Submitting..." : "Submit"}
               </button>
