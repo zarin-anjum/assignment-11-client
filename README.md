@@ -1,88 +1,127 @@
 # ContestHub 🏆
 
-A modern, full-stack contest management platform where users can discover, participate in, and manage creative contests across categories like design, writing, gaming, and more.
+A full-stack contest management platform where users can discover, participate in, and manage creative contests. Built with role-based access for admins, contest creators, and participants.
 
-## 🌐 Live Site
+🌐 **Live Site:** [https://contesthub-zarin.netlify.app](https://contesthub-zarin.netlify.app)
 
-https://upgrade-contesthub-zarin.netlify.app/
+---
 
-## 🔑 Test Credentials
- 
-**Admin Account:**
+## Screenshot
+
+> *(Add a screenshot of your homepage here)*
+
+---
+
+## Tech Stack
+
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+![Stripe](https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white)
+
+---
+
+## Test Credentials
+
+**Admin:**
 - Email: admin01@contesthub.com
 - Password: admin05_ContestHub
-  
-**Creator Account:**
+
+**Creator:**
 - Email: creator01@contesthub.com
 - Password: creator07_ContestHub
 
-## ✨ Features
+---
 
-- **Three Role System** — Separate dashboards and permissions for Normal Users, Contest Creators, and Admins. Each role sees only what's relevant to them.
+## Key Features
 
-- **Secure Authentication** — Email/password and Google Sign-in powered by Firebase Auth, with JWT tokens securing all private API routes on the backend.
+- **Three Role System** — Separate dashboards for Normal Users, Contest Creators, and Admins
+- **Stripe Payment Integration** — Entry fee payment via Stripe; participant count updates on success
+- **JWT Authentication** — Firebase Auth for login + JWT tokens securing private API routes
+- **Live Countdown Timer** — Real-time countdown per contest; closes registration after deadline
+- **Winner Declaration** — Creators view all submissions and declare a winner after the deadline
+- **Contest Search & Filter** — Search by name or filter by category with instant results
+- **Leaderboard** — Ranks users by contest wins with a top-3 podium display
+- **Dark / Light Theme** — Theme toggle with preference saved in localStorage
+- **Pagination** — Admin manage contests table paginated with 10 items per page
+- **Fully Responsive** — Works across mobile, tablet, and desktop
 
-- **Stripe Payment Integration** — Users pay a contest entry fee via Stripe's hosted checkout page. Participant count increases automatically after successful payment.
+---
 
-- **Live Countdown Timer** — Each contest detail page shows a real-time countdown to the deadline. Once the deadline passes, registration closes and the timer switches to "Contest Ended".
+## Dependencies
 
-- **Role-Based Dashboards** — Creators can add, edit, and delete their contests (before approval), view all submissions, and declare a winner after the deadline. Admins can approve/reject contests and manage all user roles.
+```json
+"@tanstack/react-query"
+"axios"
+"firebase"
+"framer-motion"
+"react-hook-form"
+"react-datepicker"
+"react-hot-toast"
+"recharts"
+"lucide-react"
+"stripe"
+"jsonwebtoken"
+"mongoose"
+"cors"
+"dotenv"
+```
 
-- **Contest Search & Filter** — Users can search contests by name or type from the home page hero or the All Contests page. Filter tabs by category (Image Design, Article Writing, Business Ideas, Gaming Review, Movie Review) update results instantly.
+---
 
-- **Leaderboard** — A dynamic leaderboard ranks all users by number of contest wins, with a top-3 podium display and a full ranked list below.
+## Run Locally
 
-- **Winner Declaration System** — After a contest deadline, the creator can view all submitted tasks and declare one winner. The winner's name and photo then appear publicly on the contest details page.
+### 1. Clone the repositories
 
-- **Task Submission Modal** — Registered participants can submit their work via a modal with a textarea for submission links, available only after successful payment registration.
-
-- **Dark / Light Theme** — A theme toggle in the navbar switches between dark and light mode. The user's preference is saved in localStorage and persists across page refreshes.
-
-- **Pagination** — The Admin's Manage Contests table is paginated with 10 items per page, including smart page number display and previous/next navigation.
-
-- **Fully Responsive** — The entire platform including all dashboards is fully responsive across mobile, tablet, and desktop screen sizes.
-
-## 🛠️ Tech Stack
-
-**Frontend:**
-- React + Vite
-- Tailwind CSS v4 + DaisyUI
-- TanStack Query (data fetching)
-- React Router DOM
-- Firebase Authentication
-- Framer Motion (animations)
-- React Hook Form
-- React Hot Toast
-- Recharts (win percentage chart)
-- Axios + Interceptors
-- Stripe.js
-
-**Backend:**
-- Node.js + Express
-- MongoDB + Mongoose
-- JSON Web Token (JWT)
-- Stripe (payment)
-- dotenv
-
-## 📦 NPM Packages Used
-
-- `@tanstack/react-query`
-- `axios`
-- `firebase`
-- `framer-motion`
-- `react-hook-form`
-- `react-datepicker`
-- `react-hot-toast`
-- `recharts`
-- `lucide-react`
-- `stripe`
-- `jsonwebtoken`
-- `mongoose`
-- `cors`
-- `dotenv`
-
-**Clone the repositories:**
 ```bash
-git clone https://github.com/yourusername/contesthub-client
-git clone https://github.com/yourusername/contesthub-server
+git clone https://github.com/zarin-anjum/assignment-11-client
+git clone https://github.com/zarin-anjum/assignment-11-server  
+```
+
+### 2. Set up the client
+
+```bash
+cd assignment-11-client
+npm install
+```
+
+Create a `.env` file in the client root:
+
+```env
+VITE_apiKey=your_firebase_api_key
+VITE_authDomain=your_firebase_auth_domain
+VITE_projectId=your_firebase_project_id
+VITE_storageBucket=your_firebase_storage_bucket
+VITE_messagingSenderId=your_firebase_messaging_sender_id
+VITE_appId=your_firebase_app_id
+VITE_STRIPE_PUBLIC_KEY=your_stripe_public_key
+VITE_SERVER_URL=http://localhost:5000
+```
+
+```bash
+npm run dev
+```
+
+### 3. Set up the server
+
+```bash
+cd assignment-11-server
+npm install
+```
+
+Create a `.env` file in the server root:
+
+```env
+DB_USER=your_mongodb_user
+DB_PASS=your_mongodb_password
+ACCESS_TOKEN_SECRET=your_jwt_secret
+STRIPE_SECRET_KEY=your_stripe_secret_key
+```
+
+```bash
+node index.js
 ```
