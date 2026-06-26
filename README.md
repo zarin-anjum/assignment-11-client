@@ -8,7 +8,7 @@ A full-stack contest management platform where users can discover, participate i
 
 ## Screenshot
 
-> *(Add a screenshot of your homepage here)*
+![ContestHub](./Screenshot.png)
 
 ---
 
